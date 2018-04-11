@@ -3,12 +3,11 @@
 
 # # 图像分类
 # 
-# 在此项目中，你将对 [CIFAR-10 数据集](https://www.cs.toronto.edu/~kriz/cifar.html) 中的图片进行分类。该数据集包含飞机、猫狗和其他物体。你需要预处理这些图片，然后用所有样本训练一个卷积神经网络。图片需要标准化（normalized），标签需要采用 one-hot 编码。你需要应用所学的知识构建卷积的、最大池化（max pooling）、丢弃（dropout）和完全连接（fully connected）的层。最后，你需要在样本图片上看到神经网络的预测结果。
-# 
+# 在此项目中，你将对 [CIFAR-10 数据集](https://www.cs.toronto.edu/~kriz/cifar.html) 中的图片进行分类。该数据集包含飞机、猫狗和其他物体。
 # 
 # ## 获取数据
 # 
-# 请运行以下单元，以下载 [CIFAR-10 数据集（Python版）](https://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz)。
+# 下载 [CIFAR-10 数据集（Python版）](https://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz)。
 # 
 
 # In[1]:
@@ -58,7 +57,7 @@ tests.test_folder_path(cifar10_dataset_folder_path)
 
 # ## 探索数据
 # 
-# 该数据集分成了几部分／批次（batches），以免你的机器在计算时内存不足。CIFAR-10 数据集包含 5 个部分，名称分别为 `data_batch_1`、`data_batch_2`，以此类推。每个部分都包含以下某个类别的标签和图片：
+# 该数据集分成了几批次（batches），以免计算时内存不足。CIFAR-10 数据集包含 5 个部分，名称分别为 `data_batch_1`、`data_batch_2`，以此类推。每个部分都包含以下某个类别的标签和图片：
 # 
 # * 飞机
 # * 汽车
@@ -71,10 +70,7 @@ tests.test_folder_path(cifar10_dataset_folder_path)
 # * 船只
 # * 卡车
 # 
-# 了解数据集也是对数据进行预测的必经步骤。你可以通过更改 `batch_id` 和 `sample_id` 探索下面的代码单元。`batch_id` 是数据集一个部分的 ID（1 到 5）。`sample_id` 是该部分中图片和标签对（label pair）的 ID。
-# 
-# 问问你自己：“可能的标签有哪些？”、“图片数据的值范围是多少？”、“标签是按顺序排列，还是随机排列的？”。思考类似的问题，有助于你预处理数据，并使预测结果更准确。
-# 
+# 可以通过更改 `batch_id` 和 `sample_id` 探索下面的代码单元。`batch_id` 是数据集一个部分的 ID（1 到 5）。`sample_id` 是该部分中图片和标签对（label pair）的 ID。
 
 # In[2]:
 
@@ -85,7 +81,7 @@ get_ipython().magic("config InlineBackend.figure_format = 'retina'")
 import helper
 import numpy as np
 
-# Explore the dataset
+
 batch_id = 5
 sample_id =1000
 helper.display_stats(cifar10_dataset_folder_path, batch_id, sample_id)
@@ -95,7 +91,7 @@ helper.display_stats(cifar10_dataset_folder_path, batch_id, sample_id)
 # 
 # ### 标准化
 # 
-# 在下面的单元中，实现 `normalize` 函数，传入图片数据 `x`，并返回标准化 Numpy 数组。值应该在 0 到 1 的范围内（含 0 和 1）。返回对象应该和 `x` 的形状一样。
+# 实现 `normalize` 函数，传入图片数据 `x`，并返回标准化 Numpy 数组。值应该在 0 到 1 的范围内。返回对象应该和 `x` 的形状一样。
 # 
 
 # In[3]:
@@ -107,7 +103,7 @@ def normalize(x):
     : x: List of image data.  The image shape is (32, 32, 3)
     : return: Numpy array of normalize data
     """
-    # TODO: Implement Function
+    
     normalized_data = (x - np.min(x))/(np.max(x) - np.min(x))
     return normalized_data
 
@@ -120,10 +116,7 @@ tests.test_normalize(normalize)
 
 # ### One-hot 编码
 # 
-# 和之前的代码单元一样，你将为预处理实现一个函数。这次，你将实现 `one_hot_encode` 函数。输入，也就是 `x`，是一个标签列表。实现该函数，以返回为 one_hot 编码的 Numpy 数组的标签列表。标签的可能值为 0 到 9。每次调用 `one_hot_encode` 时，对于每个值，one_hot 编码函数应该返回相同的编码。确保将编码映射保存到该函数外面。
-# 
-# 提示：不要重复发明轮子。
-# 
+# 实现 `one_hot_encode` 函数，以返回为 one_hot 编码的 Numpy 数组的标签列表。标签的可能值为 0 到 9。每次调用 `one_hot_encode` 时，对于每个值，one_hot 编码函数应该返回相同的编码。
 
 # In[4]:
 
@@ -135,7 +128,7 @@ def one_hot_encode(x):
     : x: List of sample Labels
     : return: Numpy array of one-hot encoded labels
     """
-    # TODO: Implement Function
+    
     lb = preprocessing.LabelBinarizer()
     lb.fit(range(10))
     one_hot_labels = lb.transform(x)
@@ -151,7 +144,7 @@ tests.test_one_hot_encode(one_hot_encode)
 
 # ### 随机化数据
 # 
-# 之前探索数据时，你已经了解到，样本的顺序是随机的。再随机化一次也不会有什么关系，但是对于这个数据集没有必要。
+# 样本的顺序是随机的,再随机化一次也不会有什么关系，但是对于这个数据集没有必要。
 # 
 
 # ## 预处理所有数据并保存
@@ -170,9 +163,6 @@ helper.preprocess_and_save_data(cifar10_dataset_folder_path, normalize, one_hot_
 
 
 # # 检查点
-# 
-# 这是你的第一个检查点。如果你什么时候决定再回到该记事本，或需要重新启动该记事本，你可以从这里开始。预处理的数据已保存到本地。
-# 
 
 # In[2]:
 
@@ -190,18 +180,11 @@ valid_features, valid_labels = pickle.load(open('preprocess_validation.p', mode=
 
 # ## 构建网络
 # 
-# 对于该神经网络，你需要将每层都构建为一个函数。你看到的大部分代码都位于函数外面。要更全面地测试你的代码，我们需要你将每层放入一个函数中。这样使我们能够提供更好的反馈，并使用我们的统一测试检测简单的错误，然后再提交项目。
-# 
-# >**注意**：如果你觉得每周很难抽出足够的时间学习这门课程，我们为此项目提供了一个小捷径。对于接下来的几个问题，你可以使用 [TensorFlow Layers](https://www.tensorflow.org/api_docs/python/tf/layers) 或 [TensorFlow Layers (contrib)](https://www.tensorflow.org/api_guides/python/contrib.layers) 程序包中的类来构建每个层级，但是“卷积和最大池化层级”部分的层级除外。TF Layers 和 Keras 及 TFLearn 层级类似，因此很容易学会。
-# 
-# >但是，如果你想充分利用这门课程，请尝试自己解决所有问题，不使用 TF Layers 程序包中的任何类。你依然可以使用其他程序包中的类，这些类和你在 TF Layers 中的类名称是一样的！例如，你可以使用 TF Neural Network 版本的 `conv2d` 类 [tf.nn.conv2d](https://www.tensorflow.org/api_docs/python/tf/nn/conv2d)，而不是 TF Layers 版本的 `conv2d` 类 [tf.layers.conv2d](https://www.tensorflow.org/api_docs/python/tf/layers/conv2d)。
-# 
-# 我们开始吧！
 # 
 # 
 # ### 输入
 # 
-# 神经网络需要读取图片数据、one-hot 编码标签和丢弃保留概率（dropout keep probability）。请实现以下函数：
+# 神经网络需要读取图片数据、one-hot 编码标签和丢弃保留概率（dropout keep probability）。实现以下函数：
 # 
 # * 实现 `neural_net_image_input`
 #  * 返回 [TF Placeholder](https://www.tensorflow.org/api_docs/python/tf/placeholder)
@@ -216,8 +199,6 @@ valid_features, valid_labels = pickle.load(open('preprocess_validation.p', mode=
 #  * 使用 [TF Placeholder](https://www.tensorflow.org/api_docs/python/tf/placeholder) 中的 TensorFlow `name` 参数对 TensorFlow 占位符 "keep_prob" 命名
 # 
 # 这些名称将在项目结束时，用于加载保存的模型。
-# 
-# 注意：TensorFlow 中的 `None` 表示形状可以是动态大小。
 
 # In[3]:
 
@@ -230,7 +211,7 @@ def neural_net_image_input(image_shape):
     : image_shape: Shape of the images
     : return: Tensor for image input.
     """
-    # TODO: Implement Function
+   
     x = tf.placeholder(tf.float32 , shape=[None, image_shape[0], image_shape[1], image_shape[2]], name="x")
     return x
 
@@ -241,7 +222,7 @@ def neural_net_label_input(n_classes):
     : n_classes: Number of classes
     : return: Tensor for label input.
     """
-    # TODO: Implement Function
+   
     y = tf.placeholder(tf.float32 , shape=[None, n_classes] , name="y")
     return y
 
@@ -251,7 +232,7 @@ def neural_net_keep_prob_input():
     Return a Tensor for keep probability
     : return: Tensor for keep probability.
     """
-    # TODO: Implement Function
+    
     keep_prob = tf.placeholder(tf.float32 , name="keep_prob")
     return keep_prob
 
@@ -267,18 +248,13 @@ tests.test_nn_keep_prob_inputs(neural_net_keep_prob_input)
 
 # ### 卷积和最大池化层
 # 
-# 卷积层级适合处理图片。对于此代码单元，你应该实现函数 `conv2d_maxpool` 以便应用卷积然后进行最大池化：
+# 卷积层级适合处理图片,实现函数 `conv2d_maxpool` 以便应用卷积然后进行最大池化：
 # 
 # * 使用 `conv_ksize`、`conv_num_outputs` 和 `x_tensor` 的形状创建权重（weight）和偏置（bias）。
 # * 使用权重和 `conv_strides` 对 `x_tensor` 应用卷积。
-#  * 建议使用我们建议的间距（padding），当然也可以使用任何其他间距。
 # * 添加偏置
 # * 向卷积中添加非线性激活（nonlinear activation）
 # * 使用 `pool_ksize` 和 `pool_strides` 应用最大池化
-#  * 建议使用我们建议的间距（padding），当然也可以使用任何其他间距。
-# 
-# **注意**：对于**此层**，**请勿使用** [TensorFlow Layers](https://www.tensorflow.org/api_docs/python/tf/layers) 或 [TensorFlow Layers (contrib)](https://www.tensorflow.org/api_guides/python/contrib.layers)，但是仍然可以使用 TensorFlow 的 [Neural Network](https://www.tensorflow.org/api_docs/python/tf/nn) 包。对于所有**其他层**，你依然可以使用快捷方法。
-# 
 
 # In[42]:
 
@@ -294,7 +270,7 @@ def conv2d_maxpool(x_tensor, conv_num_outputs, conv_ksize, conv_strides, pool_ks
     :param pool_strides: Stride 2-D Tuple for pool
     : return: A tensor that represents convolution and max pooling of x_tensor
     """
-    # TODO: Implement Function
+    
     
     #convolution
     weight = tf.Variable(tf.truncated_normal([conv_ksize[0],
@@ -331,8 +307,7 @@ tests.test_con_pool(conv2d_maxpool)
 
 # ### 扁平化层
 # 
-# 实现 `flatten` 函数，将 `x_tensor` 的维度从四维张量（4-D tensor）变成二维张量。输出应该是形状（*部分大小（Batch Size）*，*扁平化图片大小（Flattened Image Size）*）。快捷方法：对于此层，你可以使用 [TensorFlow Layers](https://www.tensorflow.org/api_docs/python/tf/layers) 或 [TensorFlow Layers (contrib)](https://www.tensorflow.org/api_guides/python/contrib.layers) 包中的类。如果你想要更大挑战，可以仅使用其他 TensorFlow 程序包。
-# 
+# 实现 `flatten` 函数，将 `x_tensor` 的维度从四维张量（4-D tensor）变成二维张量。输出应该是形状（*部分大小（Batch Size）*，*扁平化图片大小（Flattened Image Size）*）。
 
 # In[43]:
 
@@ -343,7 +318,7 @@ def flatten(x_tensor):
     : x_tensor: A tensor of size (Batch Size, ...), where ... are the image dimensions.
     : return: A tensor of size (Batch Size, Flattened Image Size).
     """
-    # TODO: Implement Function
+    
     
     x_flat = tf.reshape(x_tensor, 
                         [-1, x_tensor.get_shape().as_list()[1]*x_tensor.get_shape().as_list()[2]*x_tensor.get_shape().as_list()[3]])
@@ -359,7 +334,7 @@ tests.test_flatten(flatten)
 
 # ### 全连接层
 # 
-# 实现 `fully_conn` 函数，以向 `x_tensor` 应用完全连接的层级，形状为（*部分大小（Batch Size）*，*num_outputs*）。快捷方法：对于此层，你可以使用 [TensorFlow Layers](https://www.tensorflow.org/api_docs/python/tf/layers) 或 [TensorFlow Layers (contrib)](https://www.tensorflow.org/api_guides/python/contrib.layers) 包中的类。如果你想要更大挑战，可以仅使用其他 TensorFlow 程序包。
+# 实现 `fully_conn` 函数，以向 `x_tensor` 应用完全连接的层级，形状为（*部分大小（Batch Size）*，*num_outputs*）。
 
 # In[44]:
 
@@ -371,7 +346,7 @@ def fully_conn(x_tensor, num_outputs):
     : num_outputs: The number of output that the new tensor should be.
     : return: A 2-D tensor where the second dimension is num_outputs.
     """
-    # TODO: Implement Function
+    
     
     weights = tf.Variable(tf.truncated_normal([x_tensor.get_shape().as_list()[1], num_outputs],
                                               stddev= 0.08))
@@ -397,9 +372,7 @@ tests.test_fully_conn(fully_conn)
 
 # ### 输出层
 # 
-# 实现 `output` 函数，向 x_tensor 应用完全连接的层级，形状为（*部分大小（Batch Size）*，*num_outputs*）。快捷方法：对于此层，你可以使用 [TensorFlow Layers](https://www.tensorflow.org/api_docs/python/tf/layers) 或 [TensorFlow Layers (contrib)](https://www.tensorflow.org/api_guides/python/contrib.layers) 包中的类。如果你想要更大挑战，可以仅使用其他 TensorFlow 程序包。
-# 
-# **注意**：该层级不应应用 Activation、softmax 或交叉熵（cross entropy）。
+# 实现 `output` 函数，向 x_tensor 应用完全连接的层级，形状为（*部分大小（Batch Size）*，*num_outputs*）。
 
 # In[45]:
 
@@ -411,7 +384,7 @@ def output(x_tensor, num_outputs):
     : num_outputs: The number of output that the new tensor should be.
     : return: A 2-D tensor where the second dimension is num_outputs.
     """
-    # TODO: Implement Function
+    
     weights = tf.Variable(tf.random_normal([x_tensor.get_shape().as_list()[1], num_outputs],
                                            stddev= 0.08))
                
@@ -430,7 +403,7 @@ tests.test_output(output)
 
 # ### 创建卷积模型
 # 
-# 实现函数 `conv_net`， 创建卷积神经网络模型。该函数传入一批图片 `x`，并输出对数（logits）。使用你在上方创建的层创建此模型：
+# 实现函数 `conv_net`， 创建卷积神经网络模型。该函数传入一批图片 `x`，并输出对数（logits）。使用在前面创建的层创建此模型：
 # 
 # * 应用 1、2 或 3 个卷积和最大池化层（Convolution and Max Pool layers）
 # * 应用一个扁平层（Flatten Layer）
@@ -449,10 +422,7 @@ def conv_net(x, keep_prob):
     : keep_prob: Placeholder tensor that hold dropout keep probability.
     : return: Tensor that represents logits
     """
-    # TODO: Apply 1, 2, or 3 Convolution and Max Pool layers
-    #    Play around with different number of outputs, kernel size and stride
-    # Function Definition from Above:
-    #    conv2d_maxpool(x_tensor, conv_num_outputs, conv_ksize, conv_strides, pool_ksize, pool_strides)
+    # conv2d_maxpool(x_tensor, conv_num_outputs, conv_ksize, conv_strides, pool_ksize, pool_strides)
     
     conv_num_outputs = 32
     conv_ksize = (3, 3)
@@ -483,16 +453,11 @@ def conv_net(x, keep_prob):
     """
     
 
-    # TODO: Apply a Flatten Layer
-    # Function Definition from Above:
-    #   flatten(x_tensor)
+    # flatten(x_tensor)
     flatten_x = flatten(conv_x)
     
 
-    # TODO: Apply 1, 2, or 3 Fully Connected Layers
-    #    Play around with different number of outputs
-    # Function Definition from Above:
-    #   fully_conn(x_tensor, num_outputs)
+    # fully_conn(x_tensor, num_outputs)
     hidden_layer1 = fully_conn(flatten_x, 1024)
     
     hidden_layer2 = fully_conn(hidden_layer1, 512)
@@ -500,15 +465,11 @@ def conv_net(x, keep_prob):
     hidden_layer3 = fully_conn(hidden_layer2, 256)
     
     
-    # TODO: Apply an Output Layer
-    #    Set this to the number of classes
-    # Function Definition from Above:
-    #   output(x_tensor, num_outputs)
+    # output(x_tensor, num_outputs)
     
     out = output(hidden_layer3, 10)
     
     
-    # TODO: return output
     return out
 
 
@@ -554,11 +515,6 @@ tests.test_conv_net(conv_net)
 # * `x` 表示图片输入
 # * `y` 表示标签
 # * `keep_prob` 表示丢弃的保留率
-# 
-# 每个部分都会调用该函数，所以 `tf.global_variables_initializer()` 已经被调用。
-# 
-# 注意：不需要返回任何内容。该函数只是用来优化神经网络。
-# 
 
 # In[47]:
 
@@ -572,7 +528,7 @@ def train_neural_network(session, optimizer, keep_probability, feature_batch, la
     : feature_batch: Batch of Numpy image data
     : label_batch: Batch of Numpy label data
     """
-    # TODO: Implement Function
+    
     session.run(optimizer, feed_dict={x:feature_batch, y:label_batch, keep_prob:keep_probability})
 
 
@@ -599,7 +555,7 @@ def print_stats(session, feature_batch, label_batch, cost, accuracy):
     : cost: TensorFlow cost function
     : accuracy: TensorFlow accuracy function
     """
-    # TODO: Implement Function
+
     current_cost = sess.run(cost,
                             feed_dict={x: feature_batch, y: label_batch, keep_prob: 1})
     valid_accuracy = sess.run(accuracy,
@@ -622,7 +578,6 @@ def print_stats(session, feature_batch, label_batch, cost, accuracy):
 # In[53]:
 
 
-# TODO: Tune Parameters
 epochs = 15
 batch_size = 256
 keep_probability = 0.5
@@ -630,15 +585,11 @@ keep_probability = 0.5
 
 # ### 在单个 CIFAR-10 部分上训练
 # 
-# 我们先用单个部分，而不是用所有的 CIFAR-10 批次训练神经网络。这样可以节省时间，并对模型进行迭代，以提高准确率。最终验证准确率达到 50% 或以上之后，在下一部分对所有数据运行模型。
-# 
+# 先用单个部分，而不是用所有的 CIFAR-10 批次训练神经网络。这样可以节省时间，并对模型进行迭代，以提高准确率。验证准确率达到 50% 或以上之后，在下一部分对所有数据运行模型。
 
 # In[56]:
 
 
-"""
-DON'T MODIFY ANYTHING IN THIS CELL
-"""
 print('Checking the Training on a Single Batch...')
 with tf.Session() as sess:
     # Initializing the variables
@@ -654,14 +605,11 @@ with tf.Session() as sess:
 
 # ### 完全训练模型
 # 
-# 现在，单个 CIFAR-10 部分的准确率已经不错了，试试所有五个部分吧。
+# 试试所有五个部分。
 
 # In[54]:
 
 
-"""
-DON'T MODIFY ANYTHING IN THIS CELL
-"""
 save_model_path = './image_classification'
 
 print('Training...')
@@ -690,14 +638,11 @@ with tf.Session() as sess:
 # 
 # ## 测试模型
 # 
-# 利用测试数据集测试你的模型。这将是最终的准确率。你的准确率应该高于 50%。如果没达到，请继续调整模型结构和参数。
+# 利用测试数据集测试你的模型。
 
 # In[55]:
 
 
-"""
-DON'T MODIFY ANYTHING IN THIS CELL
-"""
 get_ipython().magic('matplotlib inline')
 get_ipython().magic("config InlineBackend.figure_format = 'retina'")
 
@@ -760,11 +705,12 @@ def test_model():
 test_model()
 
 
-# ## 为何准确率只有50-80%？
+# ## 为何准确率只有70%？
 # 
-# 你可能想问，为何准确率不能更高了？首先，对于简单的 CNN 网络来说，50% 已经不低了。纯粹猜测的准确率为10%。但是，你可能注意到有人的准确率[远远超过 80%](http://rodrigob.github.io/are_we_there_yet/build/classification_datasets_results.html#43494641522d3130)。这是因为我们还没有介绍所有的神经网络知识。我们还需要掌握一些其他技巧。
-# 
-# ## 提交项目
-# 
-# 提交项目时，确保先运行所有单元，然后再保存记事本。将 notebook 文件另存为“dlnd_image_classification.ipynb”，再在目录 "File" -> "Download as" 另存为 HTML 格式。请在提交的项目中包含 “helper.py” 和 “problem_unittests.py” 文件。
-# 
+# 对于简单的 CNN 网络来说，50% 已经不低了。纯粹猜测的准确率为10%。但是，你可能注意到有的准确率[远远超过 80%](http://rodrigob.github.io/are_we_there_yet/build/classification_datasets_results.html#43494641522d3130)。这是因为此项目还未应用到所有的神经网络知识和技巧。
+
+# In[ ]:
+
+
+
+
